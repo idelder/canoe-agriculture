@@ -16,10 +16,11 @@ from techcom import build_technology_and_commodity_agri
 from data_scraper import load_cached_or_fetch_agri
 from statcan import load_statcan_agri_shares
 from demands import build_demand_and_capacity_agri
-from costs import build_cost_invest_agri
+#from costs import build_cost_invest_agri
 from techinput import build_limit_tech_input_split_agri
 from efficiency import build_efficiency_agri
 from post_processing import add_datasets_and_sources_agri
+from post_processing import add_time_agri
 
 logger = setup_logging()
 
@@ -61,12 +62,14 @@ def main() -> None:
     comb_dict = build_efficiency_agri(comb_dict)
 
     # 7) Costs
-    comb_dict = build_cost_invest_agri(comb_dict)
+    #comb_dict = build_cost_invest_agri(comb_dict)
 
     # 8) Post-processing
     comb_dict = add_datasets_and_sources_agri(comb_dict)
+    #9) Testing purposes, add region and times in
+    #comb_dict = add_time_agri(comb_dict)
 
-    # 9) Persist
+    # 10) Persist
     write_comb_dict_to_db(db_path, tables, comb_dict)
     logger.info("Done. SQLite written to %s", db_path)
 

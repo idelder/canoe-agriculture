@@ -85,20 +85,20 @@ def build_demand_and_capacity_agri(
     logger.info("Demand rows: %d", len(d_rows))
 
     # ExistingCapacity from 2021 baseline
-    base2021 = {p: float(loaded_df['ATL']['2021'][0]) if p in atl_pro else float(loaded_df[p]['2021'][0]) for p in province_list}
-    cap_rows = []
-    for pro in province_list:
-        for sec in sector_list:
-            val = base2021[pro]
-            ref = '[A1]'
-            if pro in atl_pro:
-                split = _atl_split(val, pro, atl_shares)
-                if split is None: continue
-                val, ref = split, '[A1][A3]'
-            cap_rows.append([pro, sector_abv+sec, 2021, float(val), 'PJ', 'Existing capacity from NRCan baseline', ref, 1,1,2,3,2, ids[pro]])
+    # base2021 = {p: float(loaded_df['ATL']['2021'][0]) if p in atl_pro else float(loaded_df[p]['2021'][0]) for p in province_list}
+    # cap_rows = []
+    # for pro in province_list:
+    #     for sec in sector_list:
+    #         val = base2021[pro]
+    #         ref = '[A1]'
+    #         if pro in atl_pro:
+    #             split = _atl_split(val, pro, atl_shares)
+    #             if split is None: continue
+    #             val, ref = split, '[A1][A3]'
+    #         cap_rows.append([pro, sector_abv+sec, 2021, float(val), 'PJ', 'Existing capacity from NRCan baseline', ref, 1,1,2,3,2, ids[pro]])
 
-    cap_df = pd.DataFrame(cap_rows, columns=comb_dict['ExistingCapacity'].columns)
-    comb_dict['ExistingCapacity'] = pd.concat([comb_dict['ExistingCapacity'], cap_df], ignore_index=True)
-    logger.info("ExistingCapacity rows: %d", len(cap_rows))
+    # cap_df = pd.DataFrame(cap_rows, columns=comb_dict['ExistingCapacity'].columns)
+    # comb_dict['ExistingCapacity'] = pd.concat([comb_dict['ExistingCapacity'], cap_df], ignore_index=True)
+    # logger.info("ExistingCapacity rows: %d", len(cap_rows))
 
     return comb_dict
