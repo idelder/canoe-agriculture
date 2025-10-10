@@ -67,14 +67,14 @@ def build_demand_and_capacity_agri(
                     if pro in atl_pro:
                         split = _atl_split(val, pro, atl_shares)
                         if split is None: continue
-                        val, ref = split, '[A1][A3]'
+                        val, ref = split, '[A3]'
                 else:
-                    notes, ref = 'Scaled by GDP growth from CER CEF', '[A1][A2]'
+                    notes, ref = 'Scaled by GDP growth from CER CEF', '[A2]'
                     val = base2022[pro] * gdp_scale[year]
                     if pro in atl_pro:
                         split = _atl_split(base2022[pro], pro, atl_shares)
                         if split is None: continue
-                        val, ref = float(split) * gdp_scale[year], '[A1][A2][A3]'
+                        val, ref = float(split) * gdp_scale[year], '[A4]'
 
                 d_rows.append([
                     pro, int(year), sector_abv + dem.lower(), float(val), 'PJ', notes, ref, 1,1,2,3,2, ids[pro]

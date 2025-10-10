@@ -8,6 +8,7 @@ from __future__ import annotations
 import pandas as pd
 from typing import Dict
 from common import setup_logging
+import numpy as np
 
 logger = setup_logging()
 
@@ -37,7 +38,7 @@ def build_efficiency_agri(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, pd.Da
             'notes': 'All technologies assumed efficiency=1; commodities from NRCan Comp DB',
             'data_source': '[A1]',
             'data_id': src['data_id'],
-            'dq_cred': '', 'dq_geog': '', 'dq_struc': '', 'dq_tech': '', 'dq_time': ''
+            'dq_cred': np.nan, 'dq_geog': np.nan, 'dq_struc': np.nan, 'dq_tech': np.nan, 'dq_time': np.nan
         })
     ], ignore_index=True)
 

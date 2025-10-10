@@ -22,8 +22,9 @@ class Config:
         v = self.params.get("schema_version", [31])[0]
         return int(v)
     @property
-    def version(self) -> int:
-        return int(self.params.get("version", 1))
+    def version(self) -> str:
+        v = self.params.get("version", "1")
+        return f"{int(v):03d}"  # "001", "012", "123"
     @property
     def periods(self) -> list[int]:
         return list(self.params.get("periods", [2025]))
