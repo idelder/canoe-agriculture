@@ -22,7 +22,7 @@ def build_technology_and_commodity_agri(comb_dict: Dict[str, pd.DataFrame]) -> D
 
     tech_rows = []
     for i, sec in enumerate(sector_list):
-        tech_rows.append([sector_abv + sec, "p", "agriculture", "", "", 1, 1, 0, 0, 0, 0, 0, 0, f"Generic technology representing {sector_list_ex[i]}", ids['CAN']])
+        tech_rows.append([sector_abv + sec, "a", "agriculture", "", "", 1, 1, 0, 0, 0, 0, 0, 0, f"Generic technology representing {sector_list_ex[i]}", ids['CAN']])
     tech_df = pd.DataFrame(tech_rows, columns=comb_dict['Technology'].columns)
     comb_dict['Technology'] = pd.concat([comb_dict['Technology'], tech_df], ignore_index=True)
 

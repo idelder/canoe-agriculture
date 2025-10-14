@@ -963,7 +963,7 @@ CREATE TABLE IF NOT EXISTS LimitAnnualCapacityFactor
     FOREIGN KEY (data_source, data_id) REFERENCES DataSource (source_id, data_id),
     FOREIGN KEY (tech, data_id) REFERENCES Technology (tech, data_id),
     FOREIGN KEY (output_comm, data_id) REFERENCES Commodity (name, data_id),
-    PRIMARY KEY (region, period, tech, operator, data_id),
+    PRIMARY KEY (region, period, tech, output_comm, operator, data_id),
     CHECK (factor >= 0 AND factor <= 1)
 );
 CREATE TABLE IF NOT EXISTS LimitCapacity
@@ -1399,9 +1399,7 @@ CREATE TABLE IF NOT EXISTS TimeSegmentFraction
         REFERENCES TimeOfDay (tod),
     segfrac REAL,
     notes   TEXT,
-    data_id TEXT
-        REFERENCES DataSet (data_id),
-    PRIMARY KEY (period, season, tod, data_id),
+    PRIMARY KEY (period, season, tod),
     CHECK (segfrac >= 0 AND segfrac <= 1)
 );
 CREATE TABLE IF NOT EXISTS StorageDuration
@@ -1512,9 +1510,7 @@ CREATE TABLE IF NOT EXISTS TimeSeasonSequential
         REFERENCES SeasonLabel (season),
     num_days REAL NOT NULL,
     notes TEXT,
-    data_id TEXT
-        REFERENCES DataSet (data_id),
-    PRIMARY KEY (period, sequence, seas_seq, season, data_id),
+    PRIMARY KEY (period, sequence, seas_seq, season),
     CHECK (num_days > 0)
 );
 CREATE TABLE IF NOT EXISTS TimePeriodType

@@ -90,7 +90,7 @@ def build_limit_tech_input_split_agri(comb_dict: Dict[str, pd.DataFrame], loaded
                 rows.append([
                     region, per, f"A_{com}", f"{sector_abv}AGRI", 'ge', final_val,
                     ('Calculated from NRCan comprehensive database. If values were n.a., remainder to 100% assigned to diesel.'),
-                    '[A1]', 2, 1, 2, 3, 3, ids[region]
+                    'A1', 2, 1, 2, 3, 3, ids[region]
                 ])
 
     df = pd.DataFrame(rows, columns=comb_dict['LimitTechInputSplitAnnual'].columns)

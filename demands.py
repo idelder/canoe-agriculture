@@ -62,19 +62,19 @@ def build_demand_and_capacity_agri(
         for year in periods:
             for dem in demand_com_list:
                 if year == min(periods):
-                    notes, ref = 'Value from NRCan Comprehensive DB', '[A1]'
+                    notes, ref = 'Value from NRCan Comprehensive DB', 'A1'
                     val = base2022[pro]
                     if pro in atl_pro:
                         split = _atl_split(val, pro, atl_shares)
                         if split is None: continue
-                        val, ref = split, '[A3]'
+                        val, ref = split, 'A3'
                 else:
-                    notes, ref = 'Scaled by GDP growth from CER CEF', '[A2]'
+                    notes, ref = 'Scaled by GDP growth from CER CEF', 'A2'
                     val = base2022[pro] * gdp_scale[year]
                     if pro in atl_pro:
                         split = _atl_split(base2022[pro], pro, atl_shares)
                         if split is None: continue
-                        val, ref = float(split) * gdp_scale[year], '[A4]'
+                        val, ref = float(split) * gdp_scale[year], 'A4'
 
                 d_rows.append([
                     pro, int(year), sector_abv + dem.lower(), float(val), 'PJ', notes, ref, 1,1,2,3,2, ids[pro]
@@ -90,11 +90,11 @@ def build_demand_and_capacity_agri(
     # for pro in province_list:
     #     for sec in sector_list:
     #         val = base2021[pro]
-    #         ref = '[A1]'
+    #         ref = 'A1'
     #         if pro in atl_pro:
     #             split = _atl_split(val, pro, atl_shares)
     #             if split is None: continue
-    #             val, ref = split, '[A1][A3]'
+    #             val, ref = split, '[3]'
     #         cap_rows.append([pro, sector_abv+sec, 2021, float(val), 'PJ', 'Existing capacity from NRCan baseline', ref, 1,1,2,3,2, ids[pro]])
 
     # cap_df = pd.DataFrame(cap_rows, columns=comb_dict['ExistingCapacity'].columns)
