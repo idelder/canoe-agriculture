@@ -19,7 +19,7 @@ def add_datasets_and_sources_agri(comb_dict: Dict[str, pd.DataFrame]) -> Dict[st
     ds_rows = []
     for pro in province_list:
         ds_rows.append([ids[pro], f"{pro} - Agriculture - high resolution", f"v{version}", '2025 annual update', 'active', 'David Turnbull - david.turnbull1@ucalgary.ca', '2025-08-01', np.nan, 'Original sector design', np.nan])
-    ds.rows.append([ids['CAN']], 'General Agriculture - high resolution', f'v{version}', '2025 annual update', 'active', 'David Turnbull - david.turnbull1@ucalgary.ca', '2025-08-01', np.nan, 'Original sector design', np.nan)
+    ds_rows.append([ids['CAN'], 'General Agriculture - high resolution', f'v{version}', '2025 annual update', 'active', 'David Turnbull - david.turnbull1@ucalgary.ca', '2025-08-01', np.nan, 'Original sector design', np.nan])
     ds_df = pd.DataFrame(ds_rows, columns=comb_dict['DataSet'].columns)
     comb_dict['DataSet'] = pd.concat([comb_dict['DataSet'], ds_df], ignore_index=True)
 
