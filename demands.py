@@ -20,16 +20,9 @@ def _gdp_scalers(pop_df: pd.DataFrame, periods: list[int]) -> dict[int, float]:
     df = df[df['Year'].isin(periods)]
     df = df[df['Variable'] == 'Real Gross Domestic Product ($2012 Millions)']
     df = df[df['Scenario'] == 'Global Net-zero']
-    df = df.sort_values('Year').reset_index(drop=True)
-    scalers: dict[int, float] = {}
-    for i, row in df.iterrows():
-        year = int(row['Year'])
-        if i == 0:
-            scalers[year] = 1.0
-        else:
-            prev = float(df.loc[i-1, 'Value']); cur = float(row['Value'])
-            scalers[year] = cur / prev if prev else 1.0
-    return scalers
+    df = df.sort_values('Year').set_index('Year')['Value']
+    df = df / df.iloc[0]
+    return df.to_dict()
 
 
 def _atl_split(val: float, province: str, shares: dict[str, dict[str, float]]) -> float | None:
