@@ -9,7 +9,7 @@ Updated on Oct 7 2025 — Adds logic to assign any remainder (<1) to diesel (dsl
 from __future__ import annotations
 import pandas as pd
 from typing import Dict
-from common import setup_logging
+from common import setup_logging, data_year
 import numpy as np
 
 logger = setup_logging()
@@ -20,6 +20,7 @@ def build_limit_tech_input_split_agri(comb_dict: Dict[str, pd.DataFrame], loaded
     dom = comb_dict['__domain__']; ids = comb_dict['__ids__']
     province_list = dom['province_list']; sector_abv = dom['sector_abv']; periods = dom['periods']
     atl_pro = set(dom['atl_pro'])
+    nrcan_year = str(dom.get('nrcan_year', 2022))
 
     rows = []
     for region in province_list:
@@ -30,7 +31,7 @@ def build_limit_tech_input_split_agri(comb_dict: Dict[str, pd.DataFrame], loaded
             # Load values from dataframes
             for com, idx in COM_TO_COL.items():
                 try:
-                    value = loaded_df['ATL']['2022'][idx] if region in atl_pro else loaded_df[region]['2022'][idx]
+                    value = loaded_df['ATL'][nrcan_year][idx] if region in atl_pro else loaded_df[region][nrcan_year][idx]
                 except Exception:
                     value = None
                 if value in (None, '0.0'):
@@ -87,9 +88,10 @@ def build_limit_tech_input_split_agri(comb_dict: Dict[str, pd.DataFrame], loaded
                     missing_total = max(0.0, 1.0 - total_known)
                     final_val = round(missing_total / na_count, 3)
 
+                dy = data_year(per, periods)
                 rows.append([
                     region, per, f"A_{com}", f"{sector_abv}AGRI", 'ge', final_val,
-                    ('Calculated from NRCan comprehensive database. If values were n.a., remainder to 100% assigned to diesel.'),
+                    (f'Calculated from NRCan comprehensive database. If values were n.a., remainder to 100% assigned to diesel. Data year: {dy}.'),
                     'A1', 2, 1, 2, 3, 3, ids[region]
                 ])
 

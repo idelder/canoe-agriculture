@@ -95,6 +95,7 @@ def load_runtime_agri(temp_db_name: str = "CAN_agriculture.sqlite") -> tuple[Pat
         "commodity_list": commodity_list,
         "commodity_list_ex": commodity_list_ex,
         "periods": cfg.periods,
+        "nrcan_year": cfg.nrcan_year,
     }
     comb_dict["__ids__"] = id_dict
     comb_dict["__version__"] = cfg.version

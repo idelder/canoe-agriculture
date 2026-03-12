@@ -7,7 +7,7 @@ Created on Fri Aug 15 14:21:58 2025
 from __future__ import annotations
 import pandas as pd
 from typing import Dict
-from common import setup_logging
+from common import setup_logging, data_year
 
 logger = setup_logging()
 
@@ -15,13 +15,15 @@ ATL_MAP = { 'PEI': 'Prince Edward Island', 'NS': 'Nova Scotia', 'NB': 'New Bruns
 SECTOR_KEY = 'Agriculture, fishing, hunting and trapping'
 
 
-def _gdp_scalers(pop_df: pd.DataFrame, periods: list[int]) -> dict[int, float]:
+def _gdp_scalers(pop_df: pd.DataFrame, data_years: list[int], base_year: int) -> dict[int, float]:
+    """Return GDP scalers keyed by year, normalised to *base_year* (the NRCan data year)."""
+    years_needed = sorted(set(data_years) | {base_year})
     df = pop_df.copy()
-    df = df[df['Year'].isin(periods)]
+    df = df[df['Year'].isin(years_needed)]
     df = df[df['Variable'] == 'Real Gross Domestic Product ($2012 Millions)']
     df = df[df['Scenario'] == 'Global Net-zero']
     df = df.sort_values('Year').set_index('Year')['Value']
-    df = df / df.iloc[0]
+    df = df / df[base_year]
     return df.to_dict()
 
 
@@ -42,32 +44,40 @@ def build_demand_and_capacity_agri(
     dom = comb_dict['__domain__']; ids = comb_dict['__ids__']
     sector_abv = dom['sector_abv']; province_list = dom['province_list']
     sector_list = dom['sector_list']; periods = dom['periods']; atl_pro = set(dom['atl_pro'])
+    nrcan_year = dom.get('nrcan_year', 2022)
     demand_com_list = comb_dict.get('__demand_com_list__', ['D_AGRI'])
 
-    gdp_scale = _gdp_scalers(pop_df, periods)
+    # Data years: end-of-period convention — each model period uses data from
+    # the next period's start (last period steps forward by the same interval).
+    data_years = [data_year(p, periods) for p in periods]
+    gdp_scale = _gdp_scalers(pop_df, data_years, base_year=nrcan_year)
 
-    # Base values from NRCan table (first row index 0 as in original)
-    base2022 = {p: float(loaded_df['ATL']['2022'][0]) if p in atl_pro else float(loaded_df[p]['2022'][0]) for p in province_list}
+    # Base values from NRCan table (most recent available year)
+    base_nrcan = {p: float(loaded_df['ATL'][str(nrcan_year)][0]) if p in atl_pro else float(loaded_df[p][str(nrcan_year)][0]) for p in province_list}
 
     # Demand rows
     d_rows = []
     for pro in province_list:
         for year in periods:
+            dy = data_year(year, periods)
+            scaler = gdp_scale[dy]
             for dem in demand_com_list:
                 if year == min(periods):
-                    notes, ref = 'Value from NRCan Comprehensive DB', 'A1'
-                    val = base2022[pro]
+                    notes = f'Value from NRCan Comprehensive DB (data year: {dy})'
+                    ref = 'A1'
+                    val = base_nrcan[pro] * scaler
                     if pro in atl_pro:
-                        split = _atl_split(val, pro, atl_shares)
+                        split = _atl_split(base_nrcan[pro], pro, atl_shares)
                         if split is None: continue
-                        val, ref = split, 'A3'
+                        val, ref = float(split) * scaler, 'A3'
                 else:
-                    notes, ref = 'Scaled by GDP growth from CER CEF', 'A2'
-                    val = base2022[pro] * gdp_scale[year]
+                    notes = f'Scaled by GDP growth from CER CEF (data year: {dy})'
+                    ref = 'A2'
+                    val = base_nrcan[pro] * scaler
                     if pro in atl_pro:
-                        split = _atl_split(base2022[pro], pro, atl_shares)
+                        split = _atl_split(base_nrcan[pro], pro, atl_shares)
                         if split is None: continue
-                        val, ref = float(split) * gdp_scale[year], 'A4'
+                        val, ref = float(split) * scaler, 'A4'
 
                 d_rows.append([
                     pro, int(year), sector_abv + dem.lower(), float(val), 'PJ', notes, ref, 1,1,2,3,2, ids[pro]
