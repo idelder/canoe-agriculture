@@ -39,7 +39,7 @@ def build_efficiency_agri(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, pd.Da
             'notes': src['period'].apply(
                 lambda p: f'All technologies assumed efficiency=1; commodities from NRCan Comp DB (data year: {data_year(p, periods)})'
             ),
-            'data_source': '[A1]',
+            'data_source': 'A1',
             'data_id': src['data_id'],
             'dq_cred': np.nan, 'dq_geog': np.nan, 'dq_struc': np.nan, 'dq_tech': np.nan, 'dq_time': np.nan
         })

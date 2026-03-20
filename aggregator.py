@@ -67,7 +67,7 @@ def main() -> None:
     # 8) Post-processing
     comb_dict = add_datasets_and_sources_agri(comb_dict)
     #9) Testing purposes, add region and times in
-    #comb_dict = add_time_agri(comb_dict)
+    comb_dict = add_time_agri(comb_dict)
 
     # 10) Persist
     write_comb_dict_to_db(db_path, tables, comb_dict)
